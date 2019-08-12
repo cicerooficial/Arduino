@@ -2,7 +2,8 @@
   Projeto:Automação de Iluminação, Projeto SPMAKERWEEK29
   Autor: Cícero Henrique
   Data: 12/08/2019
-  Descrição:
+  Descrição: O desenvolvimento abaixo é parte de um projeto colaborativo entre rede pública de laboratórios Fab Lab LIVRE SP,
+  para o evento SPMAKERWEEK2019 com tema Cidades Inteligentes. 
   
 */
 
