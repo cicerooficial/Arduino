@@ -1,10 +1,10 @@
 /*
- *Projeto: Casa Automatizada SPMAKERWEEK 
- *Autor:Cícero Henrique
- *Data: 19/08/2019
- *Descrição: Prorgamação de automação de casa inteligente com Arduino. Com exemplos de automação por sensores e controle de área de uma residência 
- *utilizando placa Arduino Mega - 2560. O propósito é incentivar o uso da plataforma para atrair público em resolução de problemas reais com uso
- *da plataforma Arduino.
+ Projeto: Casa Automatizada SPMAKERWEEK 
+ Autor:Cícero Henrique
+ Data: 19/08/2019
+ Descrição: Prorgamação de automação de casa inteligente com Arduino. Com exemplos de automação por sensores e controle de área de uma residência 
+ utilizando placa Arduino Mega - 2560. O propósito é incentivar o uso da plataforma para atrair público em resolução de problemas reais com uso
+ da plataforma Arduino.
  */
 //Importação de bibliotecas
 #include <Servo.h>
