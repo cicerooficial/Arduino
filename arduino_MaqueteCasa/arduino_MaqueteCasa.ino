@@ -1,11 +1,11 @@
 /*
- Projeto: Casa Automatizada SPMAKERWEEK 
- Autor:Cícero Henrique
- Data: 19/08/2019
- Descrição: Prorgamação de automação de casa inteligente com Arduino. Com exemplos de automação por sensores e controle de área de uma residência 
- utilizando placa Arduino Mega - 2560. O propósito é incentivar o uso da plataforma para atrair público em resolução de problemas reais com uso
- da plataforma Arduino.
- */
+  Projeto: Casa Automatizada SPMAKERWEEK
+  Autor:Cícero Henrique
+  Data: 19/08/2019
+  Descrição: Prorgamação de automação de casa inteligente com Arduino. Com exemplos de automação por sensores e controle de área de uma residência
+  utilizando placa Arduino Mega - 2560. O propósito é incentivar o uso da plataforma para atrair público em resolução de problemas reais com uso
+  da plataforma Arduino.
+*/
 //Importação de bibliotecas
 #include <Servo.h>
 
@@ -13,14 +13,17 @@
 Servo servoPortavaranda;
 
 //Definição de portas de sensores
-#define sensordeLDR A0
-#define luzdaVaranda 22
-#define luzdoCorredor1 23
-#define luzdoCorredor2 24
-#define luzdoCorredor3 25
-#define apito 26
-#define botao 27
-#define sensorIR 2
+#define sensordeLDR     A0
+#define sensordeSom     A1
+#define sensorIR        2
+#define luzdaVaranda    22
+#define luzdoCorredor1  23
+#define luzdoCorredor2  24
+#define luzdoCorredor3  25
+#define apito           26
+#define botao           27
+#define luzdaSala       28
+
 
 //Definição de variáveis
 int valordoSensordeLuz;
@@ -28,25 +31,29 @@ int valordoSensorIR;
 int posicaoServo;
 int contador = 0;
 int campainhaApertada;
+int palma;
+boolean ligar = HIGH;
 
 void setup() {
   Serial.begin(9600);
-  pinMode(luzdaVaranda, OUTPUT);
-  pinMode(luzdoCorredor1, OUTPUT);
-  pinMode(luzdoCorredor2, OUTPUT);
-  pinMode(luzdoCorredor3, OUTPUT);
-  pinMode(apito, OUTPUT);
-  pinMode(sensorIR, INPUT);
-  pinMode(botao, INPUT);
+  pinMode(luzdaVaranda,     OUTPUT);
+  pinMode(luzdoCorredor1,   OUTPUT);
+  pinMode(luzdoCorredor2,   OUTPUT);
+  pinMode(luzdoCorredor3,   OUTPUT);
+  pinMode(apito,            OUTPUT);
+  pinMode(luzdaSala,        OUTPUT);
+  pinMode(sensorIR,         INPUT);
+  pinMode(botao,            INPUT);
 
   servoPortavaranda.attach(3);
   servoPortavaranda.write(180);
 
-  digitalWrite(luzdaVaranda, LOW);
-  digitalWrite(luzdoCorredor1, LOW);
-  digitalWrite(luzdoCorredor2, LOW);
-  digitalWrite(luzdoCorredor3, LOW);
-  digitalWrite(apito, LOW);
+  digitalWrite(luzdaVaranda,    LOW);
+  digitalWrite(luzdoCorredor1,  LOW);
+  digitalWrite(luzdoCorredor2,  LOW);
+  digitalWrite(luzdoCorredor3,  LOW);
+  digitalWrite(luzdaSala,       LOW);
+  digitalWrite(apito,           LOW);
 
 }
 
@@ -54,6 +61,7 @@ void loop() {
   sensordeLuz();
   sensordePorta();
   campainha();
+  sensordePalma();
   //delay(200);
 }
 
@@ -110,5 +118,15 @@ void campainha() {
   }
   else if (campainhaApertada == LOW) {
     digitalWrite(apito, LOW);
+  }
+}
+
+void sensordePalma(){
+  palma = analogRead(sensordeSom); //Le o valor do sensor de Som
+  Serial.println(palma); //Mostra no monitor Serial o valor lido
+  if (palma >= 100 ) { //Inverte o rele
+    ligar = !ligar;
+    digitalWrite(luzdaSala,  ligar);
+    delay(100);
   }
 }
