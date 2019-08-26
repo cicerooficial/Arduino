@@ -85,6 +85,8 @@ void setup() {
 }
 
 void loop() {
+
+  sensordeGAS();
   sensordeLuz();
   sensordePorta();
   campainha();
@@ -92,7 +94,6 @@ void loop() {
   sensorDHT();
   sensorMovimento();
   sensordeGAS();
-
 }
 
 void sensordeLuz() {
@@ -154,7 +155,7 @@ void campainha() {
 void sensordePalma() {
   palma = analogRead(sensordeSom); //Le o valor do sensor de Som
   Serial.println(palma); //Mostra no monitor Serial o valor lido
-  if (palma >= 100 ) {
+  if (palma >= 200 ) {
     ligar = !ligar;
     digitalWrite(luzdaSala,  ligar);
     delay(200);
@@ -203,7 +204,6 @@ void sensorMovimento() {
 void  sensordeGAS() {
   Serial.print("Nível de Gás Ambiente: ");             //EXIBE O TEXTO NO MONITOR SERIAL
   Serial.println(analogRead(sensorMQ2));               //MOSTRA NO MONITOR SERIAL O VALOR LIDO DO PINO ANALÓGICO
-
   if (analogRead(sensorMQ2) > limitedoSensordeGAS) {   //SE VALOR LIDO NO PINO ANALÓGICO FOR MAIOR QUE O VALOR LIMITE, FAZ
     digitalWrite(apito, HIGH);                         //ATIVA O BUZZER E O MESMO EMITE O SINAL SONORO
   } else {                                             //SENÃO, FAZ
