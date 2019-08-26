@@ -19,6 +19,8 @@ dht DHT;
 //Definição de portas de sensores
 #define sensordeLDR     A0
 #define sensordeSom     A1
+#define sensorMQ2       A2
+#define sensorUmidade   A3    
 #define sensorIR        2
 #define luzdaVaranda    22
 #define luzdoCorredor1  23
@@ -29,9 +31,13 @@ dht DHT;
 #define luzdaSala       30
 #define ventilador      33
 #define DHT22_PIN       29
-#define sensorMQ2       A2
 #define pinoPir         37
 #define banheiro        41
+
+//Definição de portas de atuadores
+#define umidBaixa 42              //LED UMIDADE BAIXA
+#define umidMedia 44              //LED UMIDADE MEDIA
+#define umidAlta  46              //LED UMIDADE ALTA
 
 //Define contador do sensor
 struct {
@@ -51,6 +57,7 @@ float temperatura;
 boolean ligar = HIGH;
 int limitedoSensordeGAS = 300;                      //DEFININDO UM VALOR LIMITE (NÍVEL DE GÁS NORMAL)
 
+
 void setup() {
   Serial.begin(115200);
   pinMode(luzdaVaranda,     OUTPUT);
@@ -64,6 +71,10 @@ void setup() {
   pinMode(sensorIR,         INPUT);
   pinMode(botao,            INPUT);
   pinMode(sensorMQ2,        INPUT);                 //DEFINE O PINO DO SENSOR COMO ENTRADA
+  pinMode(sensorUmidade,    INPUT);             //DEFINE O PINO DO SENSOR COMO ENTRADA  
+  pinMode(umidBaixa,        OUTPUT);
+  pinMode(umidMedia,        OUTPUT);
+  pinMode(umidAlta,         OUTPUT);
   pinMode(pinoPir,          INPUT);
   pinMode(sensordeSom,      INPUT);
 
@@ -94,6 +105,7 @@ void loop() {
   sensorDHT();
   sensorMovimento();
   sensordeGAS();
+  sensordeUmidadeSolo();
 }
 
 void sensordeLuz() {
@@ -211,3 +223,31 @@ void  sensordeGAS() {
   }
   delay(100);                                          //INTERVALO DE 100 MILISSEGUNDOS
 }
+ void sensordeUmidadeSolo(){
+   int valorUmidade;               //VARIÁVEL QUE ARMAZENA O PERCENTUAL DE UMIDADE DO SOLO
+  int umidadeMin = 600;           //VALOR MEDIDO COM O SOLO SECO
+  int umidadeMax = 900;           //VALOR MEDIDO COM O SOLO ENXARCADO
+  
+  valorUmidade = constrain(analogRead(sensorUmidade), umidadeMin , umidadeMax); //MANTÉM valorUmidade DENTRO DO INTERVALO
+  valorUmidade = map(valorUmidade, umidadeMin, umidadeMax, 100, 0);             //EXECUTA A FUNÇÃO "map" DE ACORDO COM OS PARÂMETROS PASSADOS
+  Serial.print("Umidade do solo: ");                                            //IMPRIME O TEXTO NO MONITOR SERIAL
+  Serial.print(valorUmidade);                                                    //IMPRIME NO MONITOR SERIAL O PERCENTUAL DE UMIDADE DO SOLO
+  Serial.println("%");                                                          //IMPRIME O CARACTERE NO MONITOR SERIAL
+  delay(100);
+
+  if (valorUmidade < 30) {
+    digitalWrite(umidBaixa, HIGH);
+    digitalWrite(umidMedia, LOW);
+    digitalWrite(umidAlta, LOW);
+  }
+  else if (valorUmidade > 30 && valorUmidade < 70) {
+    digitalWrite(umidMedia, HIGH);
+    digitalWrite(umidBaixa, LOW);
+    digitalWrite(umidAlta, LOW);
+  }
+  else if (valorUmidade > 70){
+    digitalWrite(umidAlta, HIGH);
+    digitalWrite(umidBaixa, LOW);
+    digitalWrite(umidMedia, LOW);
+  }
+ }
