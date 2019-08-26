@@ -155,7 +155,7 @@ void campainha() {
 void sensordePalma() {
   palma = analogRead(sensordeSom); //Le o valor do sensor de Som
   Serial.println(palma); //Mostra no monitor Serial o valor lido
-  if (palma >= 100 ) {
+  if (palma >= 200 ) {
     ligar = !ligar;
     digitalWrite(luzdaSala,  ligar);
     delay(200);
