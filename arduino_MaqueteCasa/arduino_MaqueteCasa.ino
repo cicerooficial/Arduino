@@ -33,11 +33,9 @@ dht DHT;
 #define DHT22_PIN       29
 #define pinoPir         37
 #define banheiro        41
-
-//Definição de portas de atuadores
-#define umidBaixa 42              //LED UMIDADE BAIXA
-#define umidMedia 44              //LED UMIDADE MEDIA
-#define umidAlta  46              //LED UMIDADE ALTA
+#define umidadeBaixa    42              //LED UMIDADE BAIXA
+#define umidadeMedia    44              //LED UMIDADE MEDIA
+#define umidadeAlta     46              //LED UMIDADE ALTA
 
 //Define contador do sensor
 struct {
@@ -57,10 +55,10 @@ float temperatura;
 boolean ligar = HIGH;
 int limitedoSensordeGAS = 300;                      //DEFININDO UM VALOR LIMITE (NÍVEL DE GÁS NORMAL)
 long ultimoTempo = 0;
-long intervalodeTempoSensorPalma = 500;
+long intervalodeTempoSensorPalma = 200;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   pinMode(luzdaVaranda,     OUTPUT);
   pinMode(luzdoCorredor1,   OUTPUT);
   pinMode(luzdoCorredor2,   OUTPUT);
@@ -73,9 +71,9 @@ void setup() {
   pinMode(botao,            INPUT);
   pinMode(sensorMQ2,        INPUT);                 //DEFINE O PINO DO SENSOR COMO ENTRADA
   pinMode(sensorUmidade,    INPUT);             //DEFINE O PINO DO SENSOR COMO ENTRADA
-  pinMode(umidBaixa,        OUTPUT);
-  pinMode(umidMedia,        OUTPUT);
-  pinMode(umidAlta,         OUTPUT);
+  pinMode(umidadeBaixa,     OUTPUT);
+  pinMode(umidadeMedia,     OUTPUT);
+  pinMode(umidadeAlta,      OUTPUT);
   pinMode(pinoPir,          INPUT);
   pinMode(sensordeSom,      INPUT);
 
@@ -98,15 +96,19 @@ void setup() {
 void loop() {
   unsigned long tempoAtual = millis();
 
-  sensordeGAS();
-  sensordeLuz();
-  sensordePorta();
-  campainha();
+  if (tempoAtual - ultimoTempo > intervalodeTempoSensorPalma) {
+    ultimoTempo = tempoAtual;
+    sensordeGAS();
+    sensordeLuz();
+    sensordePorta();
+    campainha();
+    sensorDHT();
+    sensorMovimento();
+    sensordeGAS();
+    sensordeUmidadeSolo();
+  }
   sensordePalma();
-  sensorDHT();
-  sensorMovimento();
-  sensordeGAS();
-  sensordeUmidadeSolo();
+
 }
 
 void sensordeLuz() {
@@ -166,13 +168,16 @@ void campainha() {
 }
 
 void sensordePalma() {
+
   palma = analogRead(sensordeSom); //Le o valor do sensor de Som
   Serial.println(palma); //Mostra no monitor Serial o valor lido
 
-  if (palma >= 200 ) {
+  if (palma > 200 ) {
     ligar = !ligar;
     digitalWrite(luzdaSala,  ligar);
+    delay(200);
   }
+
 
 }
 
@@ -238,18 +243,18 @@ void sensordeUmidadeSolo() {
   //delay(100);
 
   if (valorUmidade < 30) {
-    digitalWrite(umidBaixa, HIGH);
-    digitalWrite(umidMedia, LOW);
-    digitalWrite(umidAlta, LOW);
+    digitalWrite(umidadeBaixa, HIGH);
+    digitalWrite(umidadeMedia, LOW);
+    digitalWrite(umidadeAlta, LOW);
   }
   else if (valorUmidade > 30 && valorUmidade < 70) {
-    digitalWrite(umidMedia, HIGH);
-    digitalWrite(umidBaixa, LOW);
-    digitalWrite(umidAlta, LOW);
+    digitalWrite(umidadeMedia, HIGH);
+    digitalWrite(umidadeBaixa, LOW);
+    digitalWrite(umidadeAlta, LOW);
   }
   else if (valorUmidade > 70) {
-    digitalWrite(umidAlta, HIGH);
-    digitalWrite(umidBaixa, LOW);
-    digitalWrite(umidMedia, LOW);
+    digitalWrite(umidadeAlta, HIGH);
+    digitalWrite(umidadeBaixa, LOW);
+    digitalWrite(umidadeMedia, LOW);
   }
 }
