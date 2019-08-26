@@ -8,9 +8,12 @@
 */
 //Importação de bibliotecas
 #include <Servo.h>
+#include <dht.h>
 
-//Define objetos
+//Define objeto Servo
 Servo servoPortavaranda;
+//Define objeto dht
+dht DHT;
 
 //Definição de portas de sensores
 #define sensordeLDR     A0
@@ -22,8 +25,14 @@ Servo servoPortavaranda;
 #define luzdoCorredor3  25
 #define apito           26
 #define botao           27
-#define luzdaSala       28
+#define luzdaSala       30
+#define DHT22_PIN       29
 
+//Define contador do sensor
+struct {
+  uint32_t total;
+}
+stat = { 0 };
 
 //Definição de variáveis
 int valordoSensordeLuz;
@@ -32,10 +41,11 @@ int posicaoServo;
 int contador = 0;
 int campainhaApertada;
 int palma;
+float temperatura;
 boolean ligar = HIGH;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   pinMode(luzdaVaranda,     OUTPUT);
   pinMode(luzdoCorredor1,   OUTPUT);
   pinMode(luzdoCorredor2,   OUTPUT);
@@ -48,6 +58,9 @@ void setup() {
   servoPortavaranda.attach(3);
   servoPortavaranda.write(180);
 
+  Serial.println("Humidity (%) | \tTemperature (C)");
+
+
   digitalWrite(luzdaVaranda,    LOW);
   digitalWrite(luzdoCorredor1,  LOW);
   digitalWrite(luzdoCorredor2,  LOW);
@@ -58,11 +71,12 @@ void setup() {
 }
 
 void loop() {
-  sensordeLuz();
-  sensordePorta();
-  campainha();
-  sensordePalma();
-  //delay(200);
+  //  sensordeLuz();
+   // sensordePorta();
+   // campainha();
+    sensordePalma();
+  //sensorDHT();
+    delay(200);
 }
 
 void sensordeLuz() {
@@ -121,7 +135,7 @@ void campainha() {
   }
 }
 
-void sensordePalma(){
+void sensordePalma() {
   palma = analogRead(sensordeSom); //Le o valor do sensor de Som
   Serial.println(palma); //Mostra no monitor Serial o valor lido
   if (palma >= 100 ) { //Inverte o rele
@@ -129,4 +143,37 @@ void sensordePalma(){
     digitalWrite(luzdaSala,  ligar);
     delay(100);
   }
+/*
+void sensorDHT() {
+    
+    // READ DATA
+    uint32_t start = micros();
+    int chk = DHT.read22(DHT22_PIN);
+    uint32_t stop = micros();
+
+    //Contador
+    stat.total++;
+
+    // DISPLAY DATA
+    Serial.print(DHT.humidity, 1);
+    Serial.print("\t\t");
+    Serial.print(DHT.temperature, 1);
+    Serial.print("\t");
+    Serial.println();
+
+    delay(2000);
+
+     = DHT.temperature;
+
+
+    if (temperatura >= 25.00) {
+      digitalWrite(ventilador, HIGH);
+    }
+    else if (temperatura < 25.00) {
+      digitalWrite(ventilador, LOW);
+    }
+
+
+  }
+*/
 }
