@@ -10,6 +10,7 @@
 #include <Servo.h>
 #include <dht.h>
 
+
 //Define objeto Servo
 Servo servoPortavaranda;
 //Define objeto dht
@@ -28,6 +29,8 @@ dht DHT;
 #define luzdaSala       30
 #define ventilador      33
 #define DHT22_PIN       29
+#define pinoPir         37
+#define banheiro        41
 
 //Define contador do sensor
 struct {
@@ -42,6 +45,7 @@ int posicaoServo;
 int contador = 0;
 int campainhaApertada;
 int palma;
+int acionamento;
 float temperatura;
 boolean ligar = HIGH;
 
@@ -54,8 +58,10 @@ void setup() {
   pinMode(apito,            OUTPUT);
   pinMode(luzdaSala,        OUTPUT);
   pinMode(ventilador,       OUTPUT);
+  pinMode(banheiro,         OUTPUT);
   pinMode(sensorIR,         INPUT);
   pinMode(botao,            INPUT);
+  pinMode(pinoPir,          INPUT);
 
   servoPortavaranda.attach(3);
   servoPortavaranda.write(180);
@@ -70,16 +76,18 @@ void setup() {
   digitalWrite(luzdaSala,       LOW);
   digitalWrite(apito,           LOW);
   digitalWrite(ventilador,      LOW);
+  digitalWrite(banheiro,        LOW);
 
 }
 
 void loop() {
-   sensordeLuz();
-   sensordePorta();
-   campainha();
-   sensordePalma();
-   sensorDHT();
-   delay(200);
+  sensordeLuz();
+  sensordePorta();
+  campainha();
+  sensordePalma();
+  sensorDHT();
+  sensorMovimento();
+  delay(200);
 
 }
 
@@ -150,34 +158,42 @@ void sensordePalma() {
 }
 
 void sensorDHT() {
-   
-    // Lê os dados so sensor de temperatura e umidade
-    uint32_t start = micros();
-    int chk = DHT.read22(DHT22_PIN);
-    uint32_t stop = micros();
 
-    //Contador
-    stat.total++;
+  // Lê os dados so sensor de temperatura e umidade
+  uint32_t start = micros();
+  int chk = DHT.read22(DHT22_PIN);
+  uint32_t stop = micros();
 
-    // DISPLAY DATA
-    Serial.print(DHT.humidity, 1);
-    Serial.print("\t\t");
-    Serial.print(DHT.temperature, 1);
-    Serial.print("\t");
-    Serial.println();
+  //Contador
+  stat.total++;
 
-    delay(2000);
+  // DISPLAY DATA
+  Serial.print(DHT.humidity, 1);
+  Serial.print("\t\t");
+  Serial.print(DHT.temperature, 1);
+  Serial.print("\t");
+  Serial.println();
 
-    temperatura = DHT.temperature;
+  delay(2000);
 
-    if (temperatura >= 25.00) {
-      digitalWrite(ventilador, HIGH);
-    }
-    else if (temperatura < 25.00) {
-      digitalWrite(ventilador, LOW);
-    }
+  temperatura = DHT.temperature;
+
+  if (temperatura >= 25.00) {
+    digitalWrite(ventilador, HIGH);
+  }
+  else if (temperatura < 25.00) {
+    digitalWrite(ventilador, LOW);
+  }
 }
 
-void sensorMovimento(){
-  
+void sensorMovimento() {
+  acionamento = digitalRead(pinoPir); //Le o valor do sensor PIR
+  Serial.println(acionamento);
+
+  if (acionamento == LOW) { //Sem movimento, mantem rele desligado
+    digitalWrite(banheiro, LOW);
+  } else { //Caso seja detectado um movimento, aciona o rele
+    digitalWrite(banheiro, HIGH);
+  }
+
 }
