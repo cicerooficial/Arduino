@@ -53,13 +53,14 @@ void setup() {
   pinMode(luzdoCorredor3,   OUTPUT);
   pinMode(apito,            OUTPUT);
   pinMode(luzdaSala,        OUTPUT);
+  pinMode(ventilador,       OUTPUT);
   pinMode(sensorIR,         INPUT);
   pinMode(botao,            INPUT);
 
   servoPortavaranda.attach(3);
   servoPortavaranda.write(180);
 
-  Serial.println("Humidity (%) | \tTemperature (C)");
+  Serial.println("Umidade (%) | \tTemperatura (C)");
 
 
   digitalWrite(luzdaVaranda,    LOW);
@@ -68,19 +69,19 @@ void setup() {
   digitalWrite(luzdoCorredor3,  LOW);
   digitalWrite(luzdaSala,       LOW);
   digitalWrite(apito,           LOW);
+  digitalWrite(ventilador,      LOW);
 
 }
 
 void loop() {
-  // sensordeLuz();
-  // sensordePorta();
-  // campainha();
-  // sensordePalma();
-  sensorDHT();
-   //delay(200);
-}
+   sensordeLuz();
+   sensordePorta();
+   campainha();
+   sensordePalma();
+   sensorDHT();
+   delay(200);
 
-/*
+}
 
 void sensordeLuz() {
   valordoSensordeLuz = analogRead(sensordeLDR);
@@ -146,14 +147,11 @@ void sensordePalma() {
     digitalWrite(luzdaSala,  ligar);
     delay(100);
   }
-
-*/
-
-
+}
 
 void sensorDHT() {
-    
-    // READ DATA
+   
+    // Lê os dados so sensor de temperatura e umidade
     uint32_t start = micros();
     int chk = DHT.read22(DHT22_PIN);
     uint32_t stop = micros();
@@ -172,15 +170,14 @@ void sensorDHT() {
 
     temperatura = DHT.temperature;
 
-
     if (temperatura >= 25.00) {
       digitalWrite(ventilador, HIGH);
     }
     else if (temperatura < 25.00) {
       digitalWrite(ventilador, LOW);
     }
+}
 
-
-  }
-
+void sensorMovimento(){
+  
 }
