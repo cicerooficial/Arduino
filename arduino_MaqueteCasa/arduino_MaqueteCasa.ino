@@ -29,6 +29,7 @@ dht DHT;
 #define luzdaSala       30
 #define ventilador      33
 #define DHT22_PIN       29
+#define sensorMQ2       A2
 #define pinoPir         37
 #define banheiro        41
 
@@ -48,6 +49,7 @@ int palma;
 int acionamento;
 float temperatura;
 boolean ligar = HIGH;
+int limitedoSensordeGAS = 300;                      //DEFININDO UM VALOR LIMITE (NÍVEL DE GÁS NORMAL)
 
 void setup() {
   Serial.begin(115200);
@@ -61,6 +63,7 @@ void setup() {
   pinMode(banheiro,         OUTPUT);
   pinMode(sensorIR,         INPUT);
   pinMode(botao,            INPUT);
+  pinMode(sensorMQ2,        INPUT);                 //DEFINE O PINO DO SENSOR COMO ENTRADA
   pinMode(pinoPir,          INPUT);
   pinMode(sensordeSom,      INPUT);
 
@@ -82,13 +85,13 @@ void setup() {
 }
 
 void loop() {
-    sensordeLuz();
-    sensordePorta();
-    campainha();
-    sensordePalma();
-    sensorDHT();
-    sensorMovimento();
- 
+  sensordeGAS();
+  sensordeLuz();
+  sensordePorta();
+  campainha();
+  sensordePalma();
+  sensorDHT();
+  sensorMovimento();
 }
 
 void sensordeLuz() {
@@ -194,5 +197,16 @@ void sensorMovimento() {
   } else { //Caso seja detectado um movimento, aciona o rele
     digitalWrite(banheiro, HIGH);
   }
+}
 
+void  sensordeGAS() {
+  Serial.print("Nível de Gás Ambiente: ");             //EXIBE O TEXTO NO MONITOR SERIAL
+  Serial.println(analogRead(sensorMQ2));               //MOSTRA NO MONITOR SERIAL O VALOR LIDO DO PINO ANALÓGICO
+
+  if (analogRead(sensorMQ2) > limitedoSensordeGAS) {   //SE VALOR LIDO NO PINO ANALÓGICO FOR MAIOR QUE O VALOR LIMITE, FAZ
+    digitalWrite(apito, HIGH);                         //ATIVA O BUZZER E O MESMO EMITE O SINAL SONORO
+  } else {                                             //SENÃO, FAZ
+    digitalWrite(apito, LOW);                          //BUZZER DESLIGADO
+  }
+  delay(100);                                          //INTERVALO DE 100 MILISSEGUNDOS
 }
