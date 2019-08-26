@@ -62,6 +62,7 @@ void setup() {
   pinMode(sensorIR,         INPUT);
   pinMode(botao,            INPUT);
   pinMode(pinoPir,          INPUT);
+  pinMode(sensordeSom,      INPUT);
 
   servoPortavaranda.attach(3);
   servoPortavaranda.write(180);
@@ -81,14 +82,13 @@ void setup() {
 }
 
 void loop() {
-  sensordeLuz();
-  sensordePorta();
-  campainha();
-  sensordePalma();
-  sensorDHT();
-  sensorMovimento();
-  delay(200);
-
+    sensordeLuz();
+    sensordePorta();
+    campainha();
+    sensordePalma();
+    sensorDHT();
+    sensorMovimento();
+ 
 }
 
 void sensordeLuz() {
@@ -150,11 +150,12 @@ void campainha() {
 void sensordePalma() {
   palma = analogRead(sensordeSom); //Le o valor do sensor de Som
   Serial.println(palma); //Mostra no monitor Serial o valor lido
-  if (palma >= 100 ) { //Inverte o rele
+  if (palma >= 100 ) {
     ligar = !ligar;
     digitalWrite(luzdaSala,  ligar);
-    delay(100);
+    delay(200);
   }
+
 }
 
 void sensorDHT() {
@@ -173,8 +174,6 @@ void sensorDHT() {
   Serial.print(DHT.temperature, 1);
   Serial.print("\t");
   Serial.println();
-
-  delay(2000);
 
   temperatura = DHT.temperature;
 
