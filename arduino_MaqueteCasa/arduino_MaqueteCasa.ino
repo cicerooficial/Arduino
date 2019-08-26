@@ -10,6 +10,7 @@
 #include <Servo.h>
 #include <dht.h>
 
+
 //Define objeto Servo
 Servo servoPortavaranda;
 //Define objeto dht
@@ -28,7 +29,9 @@ dht DHT;
 #define luzdaSala       30
 #define ventilador      33
 #define DHT22_PIN       29
-#define sensorMQ2     A2
+#define sensorMQ2       A2
+#define pinoPir         37
+#define banheiro        41
 
 //Define contador do sensor
 struct {
@@ -43,6 +46,7 @@ int posicaoServo;
 int contador = 0;
 int campainhaApertada;
 int palma;
+int acionamento;
 float temperatura;
 boolean ligar = HIGH;
 int limitedoSensordeGAS = 300;                      //DEFININDO UM VALOR LIMITE (NÍVEL DE GÁS NORMAL)
@@ -55,14 +59,18 @@ void setup() {
   pinMode(luzdoCorredor3,   OUTPUT);
   pinMode(apito,            OUTPUT);
   pinMode(luzdaSala,        OUTPUT);
+  pinMode(ventilador,       OUTPUT);
+  pinMode(banheiro,         OUTPUT);
   pinMode(sensorIR,         INPUT);
   pinMode(botao,            INPUT);
   pinMode(sensorMQ2,        INPUT);                 //DEFINE O PINO DO SENSOR COMO ENTRADA
+  pinMode(pinoPir,          INPUT);
+  pinMode(sensordeSom,      INPUT);
 
   servoPortavaranda.attach(3);
   servoPortavaranda.write(180);
 
-  Serial.println("Humidity (%) | \tTemperature (C)");
+  Serial.println("Umidade (%) | \tTemperatura (C)");
 
 
   digitalWrite(luzdaVaranda,    LOW);
@@ -71,20 +79,20 @@ void setup() {
   digitalWrite(luzdoCorredor3,  LOW);
   digitalWrite(luzdaSala,       LOW);
   digitalWrite(apito,           LOW);
+  digitalWrite(ventilador,      LOW);
+  digitalWrite(banheiro,        LOW);
 
 }
 
 void loop() {
-  // sensordeLuz();
-  // sensordePorta();
-  // campainha();
-  // sensordePalma();
-  sensorDHT();
   sensordeGAS();
-   //delay(200);
+  sensordeLuz();
+  sensordePorta();
+  campainha();
+  sensordePalma();
+  sensorDHT();
+  sensorMovimento();
 }
-
-/*
 
 void sensordeLuz() {
   valordoSensordeLuz = analogRead(sensordeLDR);
@@ -145,58 +153,60 @@ void campainha() {
 void sensordePalma() {
   palma = analogRead(sensordeSom); //Le o valor do sensor de Som
   Serial.println(palma); //Mostra no monitor Serial o valor lido
-  if (palma >= 100 ) { //Inverte o rele
+  if (palma >= 100 ) {
     ligar = !ligar;
     digitalWrite(luzdaSala,  ligar);
-    delay(100);
+    delay(200);
   }
 
-*/
-
-
+}
 
 void sensorDHT() {
-    
-    // READ DATA
-    uint32_t start = micros();
-    int chk = DHT.read22(DHT22_PIN);
-    uint32_t stop = micros();
 
-    //Contador
-    stat.total++;
+  // Lê os dados so sensor de temperatura e umidade
+  uint32_t start = micros();
+  int chk = DHT.read22(DHT22_PIN);
+  uint32_t stop = micros();
 
-    // DISPLAY DATA
-    Serial.print(DHT.humidity, 1);
-    Serial.print("\t\t");
-    Serial.print(DHT.temperature, 1);
-    Serial.print("\t");
-    Serial.println();
+  //Contador
+  stat.total++;
 
-    delay(2000);
+  // DISPLAY DATA
+  Serial.print(DHT.humidity, 1);
+  Serial.print("\t\t");
+  Serial.print(DHT.temperature, 1);
+  Serial.print("\t");
+  Serial.println();
 
-    temperatura = DHT.temperature;
+  temperatura = DHT.temperature;
 
-
-    if (temperatura >= 25.00) {
-      digitalWrite(ventilador, HIGH);
-    }
-    else if (temperatura < 25.00) {
-      digitalWrite(ventilador, LOW);
-    }
-
-
+  if (temperatura >= 25.00) {
+    digitalWrite(ventilador, HIGH);
   }
-
-  void  sensordeGAS(){
-    Serial.print("Nível de Gás Ambiente: ");             //EXIBE O TEXTO NO MONITOR SERIAL
-    Serial.println(analogRead(sensorMQ2));               //MOSTRA NO MONITOR SERIAL O VALOR LIDO DO PINO ANALÓGICO
-    
-    if (analogRead(sensorMQ2) > limitedoSensordeGAS) {   //SE VALOR LIDO NO PINO ANALÓGICO FOR MAIOR QUE O VALOR LIMITE, FAZ
-      digitalWrite(apito, HIGH);                         //ATIVA O BUZZER E O MESMO EMITE O SINAL SONORO
-    } else {                                             //SENÃO, FAZ
-      digitalWrite(apito, LOW);                          //BUZZER DESLIGADO
-    }
-    delay(100);                                          //INTERVALO DE 100 MILISSEGUNDOS
+  else if (temperatura < 25.00) {
+    digitalWrite(ventilador, LOW);
   }
+}
 
+void sensorMovimento() {
+  acionamento = digitalRead(pinoPir); //Le o valor do sensor PIR
+  Serial.println(acionamento);
+
+  if (acionamento == LOW) { //Sem movimento, mantem rele desligado
+    digitalWrite(banheiro, LOW);
+  } else { //Caso seja detectado um movimento, aciona o rele
+    digitalWrite(banheiro, HIGH);
+  }
+}
+
+void  sensordeGAS() {
+  Serial.print("Nível de Gás Ambiente: ");             //EXIBE O TEXTO NO MONITOR SERIAL
+  Serial.println(analogRead(sensorMQ2));               //MOSTRA NO MONITOR SERIAL O VALOR LIDO DO PINO ANALÓGICO
+
+  if (analogRead(sensorMQ2) > limitedoSensordeGAS) {   //SE VALOR LIDO NO PINO ANALÓGICO FOR MAIOR QUE O VALOR LIMITE, FAZ
+    digitalWrite(apito, HIGH);                         //ATIVA O BUZZER E O MESMO EMITE O SINAL SONORO
+  } else {                                             //SENÃO, FAZ
+    digitalWrite(apito, LOW);                          //BUZZER DESLIGADO
+  }
+  delay(100);                                          //INTERVALO DE 100 MILISSEGUNDOS
 }
