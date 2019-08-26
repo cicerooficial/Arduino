@@ -85,13 +85,14 @@ void setup() {
 }
 
 void loop() {
-  sensordeGAS();
   sensordeLuz();
   sensordePorta();
   campainha();
   sensordePalma();
   sensorDHT();
   sensorMovimento();
+  sensordeGAS();
+
 }
 
 void sensordeLuz() {
