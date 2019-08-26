@@ -26,6 +26,7 @@ dht DHT;
 #define apito           26
 #define botao           27
 #define luzdaSala       30
+#define ventilador      33
 #define DHT22_PIN       29
 
 //Define contador do sensor
@@ -71,13 +72,15 @@ void setup() {
 }
 
 void loop() {
-  //  sensordeLuz();
-   // sensordePorta();
-   // campainha();
-    sensordePalma();
-  //sensorDHT();
-    delay(200);
+  // sensordeLuz();
+  // sensordePorta();
+  // campainha();
+  // sensordePalma();
+  sensorDHT();
+   //delay(200);
 }
+
+/*
 
 void sensordeLuz() {
   valordoSensordeLuz = analogRead(sensordeLDR);
@@ -143,7 +146,11 @@ void sensordePalma() {
     digitalWrite(luzdaSala,  ligar);
     delay(100);
   }
-/*
+
+*/
+
+
+
 void sensorDHT() {
     
     // READ DATA
@@ -163,7 +170,7 @@ void sensorDHT() {
 
     delay(2000);
 
-     = DHT.temperature;
+    temperatura = DHT.temperature;
 
 
     if (temperatura >= 25.00) {
@@ -175,5 +182,5 @@ void sensorDHT() {
 
 
   }
-*/
+
 }
