@@ -28,6 +28,7 @@ dht DHT;
 #define luzdaSala       30
 #define ventilador      33
 #define DHT22_PIN       29
+#define sensorMQ2     A2
 
 //Define contador do sensor
 struct {
@@ -44,6 +45,7 @@ int campainhaApertada;
 int palma;
 float temperatura;
 boolean ligar = HIGH;
+int limitedoSensordeGAS = 300;                      //DEFININDO UM VALOR LIMITE (NÍVEL DE GÁS NORMAL)
 
 void setup() {
   Serial.begin(115200);
@@ -55,6 +57,7 @@ void setup() {
   pinMode(luzdaSala,        OUTPUT);
   pinMode(sensorIR,         INPUT);
   pinMode(botao,            INPUT);
+  pinMode(sensorMQ2,        INPUT);                 //DEFINE O PINO DO SENSOR COMO ENTRADA
 
   servoPortavaranda.attach(3);
   servoPortavaranda.write(180);
@@ -77,6 +80,7 @@ void loop() {
   // campainha();
   // sensordePalma();
   sensorDHT();
+  sensordeGAS();
    //delay(200);
 }
 
@@ -181,6 +185,18 @@ void sensorDHT() {
     }
 
 
+  }
+
+  void  sensordeGAS(){
+    Serial.print("Nível de Gás Ambiente: ");             //EXIBE O TEXTO NO MONITOR SERIAL
+    Serial.println(analogRead(sensorMQ2));               //MOSTRA NO MONITOR SERIAL O VALOR LIDO DO PINO ANALÓGICO
+    
+    if (analogRead(sensorMQ2) > limitedoSensordeGAS) {   //SE VALOR LIDO NO PINO ANALÓGICO FOR MAIOR QUE O VALOR LIMITE, FAZ
+      digitalWrite(apito, HIGH);                         //ATIVA O BUZZER E O MESMO EMITE O SINAL SONORO
+    } else {                                             //SENÃO, FAZ
+      digitalWrite(apito, LOW);                          //BUZZER DESLIGADO
+    }
+    delay(100);                                          //INTERVALO DE 100 MILISSEGUNDOS
   }
 
 }
