@@ -20,7 +20,7 @@ dht DHT;
 #define sensordeLDR     A0
 #define sensordeSom     A1
 #define sensorMQ2       A2
-#define sensorUmidade   A3    
+#define sensorUmidade   A3
 #define sensorIR        2
 #define luzdaVaranda    22
 #define luzdoCorredor1  23
@@ -56,7 +56,8 @@ int acionamento;
 float temperatura;
 boolean ligar = HIGH;
 int limitedoSensordeGAS = 300;                      //DEFININDO UM VALOR LIMITE (NÍVEL DE GÁS NORMAL)
-
+long ultimoTempo = 0;
+long intervalodeTempoSensorPalma = 500;
 
 void setup() {
   Serial.begin(115200);
@@ -71,7 +72,7 @@ void setup() {
   pinMode(sensorIR,         INPUT);
   pinMode(botao,            INPUT);
   pinMode(sensorMQ2,        INPUT);                 //DEFINE O PINO DO SENSOR COMO ENTRADA
-  pinMode(sensorUmidade,    INPUT);             //DEFINE O PINO DO SENSOR COMO ENTRADA  
+  pinMode(sensorUmidade,    INPUT);             //DEFINE O PINO DO SENSOR COMO ENTRADA
   pinMode(umidBaixa,        OUTPUT);
   pinMode(umidMedia,        OUTPUT);
   pinMode(umidAlta,         OUTPUT);
@@ -82,7 +83,6 @@ void setup() {
   servoPortavaranda.write(180);
 
   Serial.println("Umidade (%) | \tTemperatura (C)");
-
 
   digitalWrite(luzdaVaranda,    LOW);
   digitalWrite(luzdoCorredor1,  LOW);
@@ -96,6 +96,7 @@ void setup() {
 }
 
 void loop() {
+  unsigned long tempoAtual = millis();
 
   sensordeGAS();
   sensordeLuz();
@@ -167,10 +168,10 @@ void campainha() {
 void sensordePalma() {
   palma = analogRead(sensordeSom); //Le o valor do sensor de Som
   Serial.println(palma); //Mostra no monitor Serial o valor lido
+
   if (palma >= 200 ) {
     ligar = !ligar;
     digitalWrite(luzdaSala,  ligar);
-    delay(200);
   }
 
 }
@@ -221,19 +222,20 @@ void  sensordeGAS() {
   } else {                                             //SENÃO, FAZ
     digitalWrite(apito, LOW);                          //BUZZER DESLIGADO
   }
-  delay(100);                                          //INTERVALO DE 100 MILISSEGUNDOS
+  //  delay(100);                                          //INTERVALO DE 100 MILISSEGUNDOS
 }
- void sensordeUmidadeSolo(){
-   int valorUmidade;               //VARIÁVEL QUE ARMAZENA O PERCENTUAL DE UMIDADE DO SOLO
+
+void sensordeUmidadeSolo() {
+  int valorUmidade;               //VARIÁVEL QUE ARMAZENA O PERCENTUAL DE UMIDADE DO SOLO
   int umidadeMin = 600;           //VALOR MEDIDO COM O SOLO SECO
   int umidadeMax = 900;           //VALOR MEDIDO COM O SOLO ENXARCADO
-  
+
   valorUmidade = constrain(analogRead(sensorUmidade), umidadeMin , umidadeMax); //MANTÉM valorUmidade DENTRO DO INTERVALO
   valorUmidade = map(valorUmidade, umidadeMin, umidadeMax, 100, 0);             //EXECUTA A FUNÇÃO "map" DE ACORDO COM OS PARÂMETROS PASSADOS
   Serial.print("Umidade do solo: ");                                            //IMPRIME O TEXTO NO MONITOR SERIAL
   Serial.print(valorUmidade);                                                    //IMPRIME NO MONITOR SERIAL O PERCENTUAL DE UMIDADE DO SOLO
   Serial.println("%");                                                          //IMPRIME O CARACTERE NO MONITOR SERIAL
-  delay(100);
+  //delay(100);
 
   if (valorUmidade < 30) {
     digitalWrite(umidBaixa, HIGH);
@@ -245,9 +247,9 @@ void  sensordeGAS() {
     digitalWrite(umidBaixa, LOW);
     digitalWrite(umidAlta, LOW);
   }
-  else if (valorUmidade > 70){
+  else if (valorUmidade > 70) {
     digitalWrite(umidAlta, HIGH);
     digitalWrite(umidBaixa, LOW);
     digitalWrite(umidMedia, LOW);
   }
- }
+}
