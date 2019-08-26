@@ -58,7 +58,7 @@ long ultimoTempo = 0;
 long intervalodeTempoSensorPalma = 200;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   pinMode(luzdaVaranda,     OUTPUT);
   pinMode(luzdoCorredor1,   OUTPUT);
   pinMode(luzdoCorredor2,   OUTPUT);
