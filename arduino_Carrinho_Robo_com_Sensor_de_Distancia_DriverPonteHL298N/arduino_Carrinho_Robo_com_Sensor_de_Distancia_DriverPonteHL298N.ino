@@ -86,6 +86,7 @@ void loop() {
     acionaMotor(MOTOR_A_PARAR, PARAR, 0);
     acionaMotor(MOTOR_B_PARAR, PARAR, 0);
     delay(500);
+    //Enquanto o centimetros é menor que a distancia da parede fica virando até encontrar uma saida
     while (centimetros <= distancia_da_Parede) {
       acionaMotor(MOTOR_A, TRAS, 50);
       acionaMotor(MOTOR_B, TRAS, 50);
@@ -112,6 +113,7 @@ void loop() {
     acionaMotor(MOTOR_A_PARAR, PARAR, 0);
     acionaMotor(MOTOR_B_PARAR, PARAR, 0);
     delay(500);
+    //Enquanto o centimetros é menor que a distancia da parede fica virando até encontrar uma saida
     while (centimetros <= distancia_da_Parede) {
       acionaMotor(MOTOR_A, TRAS, 50);
       acionaMotor(MOTOR_B, TRAS, 50);
@@ -137,6 +139,7 @@ void loop() {
     acionaMotor(MOTOR_A_PARAR, PARAR, 0);
     acionaMotor(MOTOR_B_PARAR, PARAR, 0);
     delay(500);
+    //Enquanto o centimetros é menor que a distancia da parede fica virando até encontrar uma saida
     while (centimetros <= distancia_da_Parede) {
       acionaMotor(MOTOR_A, TRAS, 50);
       acionaMotor(MOTOR_B, TRAS, 50);
@@ -162,6 +165,7 @@ void loop() {
     acionaMotor(MOTOR_A_PARAR, PARAR, 0);
     acionaMotor(MOTOR_B_PARAR, PARAR, 0);
     delay(500);
+    //Enquanto o centimetros é menor que a distancia da parede fica virando até encontrar uma saida
     while (centimetros <= distancia_da_Parede) {
       acionaMotor(MOTOR_A, TRAS, 50);
       acionaMotor(MOTOR_B, TRAS, 50);
@@ -187,6 +191,7 @@ void loop() {
     acionaMotor(MOTOR_A_PARAR, PARAR, 0);
     acionaMotor(MOTOR_B_PARAR, PARAR, 0);
     delay(500);
+    //Enquanto o centimetros é menor que a distancia da parede fica virando até encontrar uma saida
     while (centimetros <= distancia_da_Parede) {
       acionaMotor(MOTOR_A, TRAS, 50);
       acionaMotor(MOTOR_B, TRAS, 50);
@@ -212,6 +217,7 @@ void loop() {
     acionaMotor(MOTOR_A_PARAR, PARAR, 0);
     acionaMotor(MOTOR_B_PARAR, PARAR, 0);
     delay(500);
+    //Enquanto o centimetros é menor que a distancia da parede fica virando até encontrar uma saida
     while (centimetros <= distancia_da_Parede) {
       acionaMotor(MOTOR_A, TRAS, 50);
       acionaMotor(MOTOR_B, TRAS, 50);
