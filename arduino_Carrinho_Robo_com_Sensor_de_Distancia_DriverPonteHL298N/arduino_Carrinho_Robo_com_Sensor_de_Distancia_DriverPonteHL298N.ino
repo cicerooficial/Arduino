@@ -231,7 +231,7 @@ void loop() {
       centimetros = olho.convert(microsec, Ultrasonic::CM);
     }
     Serial.println("Pista liberada, seguindo em frente!");
-    curva = curva + 1;//Conta a sesta curva
+    curva = curva + 1;//Conta a sexta curva
 
   }
   /*
