@@ -1,5 +1,19 @@
-//Define variaveis para tons
+/*
+  Projeto:Carrinho com Sensor de Distância - Projeto SPMAKERWEEK29
+  Autores: Cícero Henrique
+  Data: 20/09/2019
+  Descrição: O desenvolvimento abaixo é um projeto de carrinho com sensor ultrassonico
+  para corrida Maker, atividade lúdica desenvolvida pelo técnico Gabriel Rodrigues de Andrade.
 
+  Fontes de ajuda:
+  Mélodia Super Mário
+  https://www.usinainfo.com.br/blog/tocando-tema-do-super-mario-com-buzzer-e-arduino/
+
+  Controle de Velocidade de motores DC com Driver Ponte H - L298n
+  https://portal.vidadesilicio.com.br/ponte-h-l298n-controle-velocidade-motor/
+*/
+
+//Define variaveis para tons
 #define NOTE_B0  31
 #define NOTE_C1  33
 #define NOTE_CS1 35
@@ -89,7 +103,7 @@
 #define NOTE_CS8 4435
 #define NOTE_D8  4699
 #define NOTE_DS8 4978
- 
+
 #define melodyPin 3
 //Mario main theme melody
 int melody[] = {
@@ -97,22 +111,22 @@ int melody[] = {
   0, NOTE_C7, NOTE_E7, 0,
   NOTE_G7, 0, 0,  0,
   NOTE_G6, 0, 0, 0,
- 
+
   NOTE_C7, 0, 0, NOTE_G6,
   0, 0, NOTE_E6, 0,
   0, NOTE_A6, 0, NOTE_B6,
   0, NOTE_AS6, NOTE_A6, 0,
- 
+
   NOTE_G6, NOTE_E7, NOTE_G7,
   NOTE_A7, 0, NOTE_F7, NOTE_G7,
   0, NOTE_E7, 0, NOTE_C7,
   NOTE_D7, NOTE_B6, 0, 0,
- 
+
   NOTE_C7, 0, 0, NOTE_G6,
   0, 0, NOTE_E6, 0,
   0, NOTE_A6, 0, NOTE_B6,
   0, NOTE_AS6, NOTE_A6, 0,
- 
+
   NOTE_G6, NOTE_E7, NOTE_G7,
   NOTE_A7, 0, NOTE_F7, NOTE_G7,
   0, NOTE_E7, 0, NOTE_C7,
@@ -124,22 +138,22 @@ int tempo[] = {
   12, 12, 12, 12,
   12, 12, 12, 12,
   12, 12, 12, 12,
- 
+
   12, 12, 12, 12,
   12, 12, 12, 12,
   12, 12, 12, 12,
   12, 12, 12, 12,
- 
+
   9, 9, 9,
   12, 12, 12, 12,
   12, 12, 12, 12,
   12, 12, 12, 12,
- 
+
   12, 12, 12, 12,
   12, 12, 12, 12,
   12, 12, 12, 12,
   12, 12, 12, 12,
- 
+
   9, 9, 9,
   12, 12, 12, 12,
   12, 12, 12, 12,
@@ -189,7 +203,7 @@ int underworld_tempo[] = {
   10, 10, 10,
   3, 3, 3
 };
- 
+
 
 //Inclui biblioteca do sensor Ultrassonic
 #include <Ultrasonic.h>
@@ -214,7 +228,7 @@ int curva = 1;
 Ultrasonic olho(pino_trigger, pino_echo);
 
 void setup() {
-  
+
   pinMode(4,  OUTPUT);
   pinMode(5,  OUTPUT);
   pinMode(6,  OUTPUT);
@@ -268,7 +282,7 @@ void acionaMotor(int motor, boolean sentido, int velocidade) {
 }//Fim Void Setup
 
 int song = 0;
- 
+
 void sing(int s) {
   // iterate over the notes of the melody:
   song = s;
@@ -276,49 +290,49 @@ void sing(int s) {
     Serial.println(" 'Underworld Theme'");
     int size = sizeof(underworld_melody) / sizeof(int);
     for (int thisNote = 0; thisNote < size; thisNote++) {
- 
+
       // to calculate the note duration, take one second
       // divided by the note type.
       //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
       int noteDuration = 1000 / underworld_tempo[thisNote];
- 
+
       buzz(melodyPin, underworld_melody[thisNote], noteDuration);
- 
+
       // to distinguish the notes, set a minimum time between them.
       // the note's duration + 30% seems to work well:
       int pauseBetweenNotes = noteDuration * 1.30;
       delay(pauseBetweenNotes);
- 
+
       // stop the tone playing:
       buzz(melodyPin, 0, noteDuration);
- 
+
     }
- 
+
   } else {
- 
+
     Serial.println(" 'Mario Theme'");
     int size = sizeof(melody) / sizeof(int);
     for (int thisNote = 0; thisNote < size; thisNote++) {
- 
+
       // to calculate the note duration, take one second
       // divided by the note type.
       //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
       int noteDuration = 1000 / tempo[thisNote];
- 
+
       buzz(melodyPin, melody[thisNote], noteDuration);
- 
+
       // to distinguish the notes, set a minimum time between them.
       // the note's duration + 30% seems to work well:
       int pauseBetweenNotes = noteDuration * 1.30;
       delay(pauseBetweenNotes);
- 
+
       // stop the tone playing:
       buzz(melodyPin, 0, noteDuration);
- 
+
     }
   }
 }
- 
+
 void buzz(int targetPin, long frequency, long length) {
   digitalWrite(13, HIGH);
   long delayValue = 1000000 / frequency / 2; // calculate the delay value between transitions
@@ -334,7 +348,7 @@ void buzz(int targetPin, long frequency, long length) {
     delayMicroseconds(delayValue); // wait again or the calculated delay value
   }
   digitalWrite(13, LOW);
- 
+
 }
 void loop() {
 
