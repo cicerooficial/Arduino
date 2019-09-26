@@ -24,15 +24,15 @@ void setup() {
 void loop() {
 
   velocidadePotenciometro = analogRead(potenciometro1);
-  velocidadePotenciometro = map(velocidadePotenciometro, 0, 1023, 0, 1000);
+  velocidadePotenciometro = map(velocidadePotenciometro, 0, 1023, 0, 1023);
 
   //CONTROLE DE IDA E VOLTA E VELOCIDADE
 
   //IDA
   for (int contador = 2; contador <= 11; contador++) {
-    analogWrite(contador, HIGH);
+    digitalWrite(contador, HIGH);
     delay(velocidadePotenciometro);
-    analogWrite(contador, LOW);
+    digitalWrite(contador, LOW);
     delay(velocidadePotenciometro);
   }
   
@@ -40,9 +40,9 @@ void loop() {
   //VOLTA
   for (int contador = 11; contador >= 2; contador--) {
 
-    analogWrite(contador, HIGH);
+    digitalWrite(contador, HIGH);
     delay(velocidadePotenciometro);
-    analogWrite(contador, LOW);
+    digitalWrite(contador, LOW);
     delay(velocidadePotenciometro);
   }
   

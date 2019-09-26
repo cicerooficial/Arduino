@@ -92,9 +92,9 @@ void efeitoLuzes() {
 
   //IDA
   for (int contador = 2; contador <= 11; contador++) {
-    analogWrite(contador, HIGH);
+    digitalWrite(contador, HIGH);
     delay(velocidadePotenciometro);
-    analogWrite(contador, LOW);
+    digitalWrite(contador, LOW);
     delay(velocidadePotenciometro);
   }
 
@@ -102,9 +102,9 @@ void efeitoLuzes() {
   //VOLTA
   for (int contador = 11; contador >= 2; contador--) {
 
-    analogWrite(contador, HIGH);
+    digitalWrite(contador, HIGH);
     delay(velocidadePotenciometro);
-    analogWrite(contador, LOW);
+    digitalWrite(contador, LOW);
     delay(velocidadePotenciometro);
   }
 
