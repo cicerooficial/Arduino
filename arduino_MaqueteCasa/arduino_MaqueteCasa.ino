@@ -100,7 +100,7 @@ void loop() {
     ultimoTempo = tempoAtual;
     sensordeGAS();
     sensordeLuz();
-    sensordePorta();
+//  sensordePorta();
     campainha();
     sensorDHT();
     sensorMovimento();
